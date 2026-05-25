@@ -1,68 +1,168 @@
 # Implementation Planner and Tracker
 
-A Claude Code / agent-friendly skill repo for turning shaped product work into implementation plans that preserve intent.
+A tool / skill repo for turning a PRD or shaped package of work into a technical design plan that humans and agents can actually build from.
 
-This repo adapts the Dumplink method into a reusable planning skill:
+The tool is meant to sit between shaping and implementation. It does **not** replace shaping, Spec Kit, an engineer's judgment, or a code-aware implementation agent. Its job is to preserve the intent of the shaped work while translating it into:
 
-1. **DUMP** — list all likely work from a shaped project without sequencing too early.
-2. **CLUSTER** — group the work into vertical task groups that produce judgeable behavior.
-3. **SEQUENCE** — order task groups by risk, dependency, and what unlocks the next useful slice.
+- a builder-facing kickoff doc
+- a technical design outline
+- a scope / task-group map
+- dependency foliation and parallelization decisions
+- the first vertical implementation slices
+- compact handoff packets for Codex, Claude Code, Cursor, or a human engineer
+- a lightweight tracker based on unknowns, dependencies, layers, parallelization, and slice progress
 
-The goal is to avoid the default agent failure mode: turning a coherent shaped project into a horizontal pile of disconnected tasks.
+## Core idea
 
-## What this skill produces
+Most planning tools turn work into to-dos too early. This repo uses a different sequence:
 
-Use `/dumplink` to create:
+1. **Preserve the shaped intent** — restate the problem, appetite, outcome, selected approach, non-goals, and constraints.
+2. **Unfold the technical shape** — identify affected surfaces, system boundaries, data/state, integration points, risks, and open questions.
+3. **Dump the work** — list likely implementation work without sequencing too early.
+4. **Cluster into scopes / task groups** — group tasks by what can be completed and judged together.
+5. **Map interrelationships** — show which task groups feed or unlock others.
+6. **Foliate dependencies** — convert the interrelationship graph into dependency layers and candidate parallel work sets.
+7. **Decide parallelization** — distinguish what can run in parallel by dependency from what should run in parallel after considering unknowns and capacity.
+8. **Sequence by risk, dependency, and stop condition** — start where unknowns can sink the project if discovered late.
+9. **Define initial slices** — make the first few slices independently judgeable and agent-handoff ready.
+10. **Track by what is known, unknown, done, cut, or deferred** — not by raw task count.
 
-- project boundary
+Dumplink's DUMP → CLUSTER → FOLIATE → SEQUENCE method is one important subroutine inside this larger implementation-planning tool.
+
+## What this produces
+
+Use `/implementation-planner` to create:
+
+- readiness check for the PRD or shaped package
+- project boundary and appetite
+- builder-facing kickoff doc
+- technical design plan
+- affected system map
+- assumptions and missing-information register
 - raw task dump
-- vertical task groups
-- unknown / known / done risk states
-- dependency map
-- build sequence
-- scope cuts
+- vertical task groups / scopes
+- dependency and interrelationship map
+- foliated dependency layers
+- parallelization plan
+- initial implementation slices
+- scope cuts / deferrals
 - acceptance checks
-- compact agent handoff packet
+- agent handoff packets
+- tracker table
+
+Use `/dumplink` when you only need the narrower DUMP → CLUSTER → FOLIATE → SEQUENCE task-grouping move.
 
 ## When to use it
 
-Use this after a project has been framed, shaped, and selected for a fixed time budget.
+Use this after a product direction has been selected and the next question is:
 
-It is best for deliberate build-cycle work: meaningful product bets, shaped features, and implementation plans that need to stay whole while still becoming concrete enough for agents or engineers to build.
+> How do we hand this to builders without turning it into a flat ticket pile?
+
+It is best for deliberate build-cycle work: meaningful product bets, shaped features, PRDs that need technical interpretation, and implementation plans that need to stay whole while becoming concrete enough for agents or engineers to build.
 
 Do not use it as a generic ticket backlog for reactive bugs, support requests, or interrupt-driven work.
 
 ## Skill locations
 
 ```text
-skills/dumplink/SKILL.md   # Claude-style skill packaging
-dumplink/SKILL.md          # root mirror for direct skill installs or simple linking
-AGENTS.md                  # tool-neutral agent instructions
+skills/implementation-planner/SKILL.md   # primary Claude-style skill packaging
+implementation-planner/SKILL.md          # root mirror for direct skill installs or simple linking
+skills/dumplink/SKILL.md                 # narrower Dumplink task-grouping helper
+dumplink/SKILL.md                        # root mirror of Dumplink helper
+templates/implementation-plan.md         # reusable output template
+hooks/implementation-planning-ripple.sh  # optional Claude Code hook
+AGENTS.md                                # tool-neutral agent instructions
 ```
 
 ## Claude Code install
 
-Clone this repo and link the skill:
+Clone this repo and link the primary skill:
 
 ```bash
 git clone https://github.com/mattlane66/Implementation-Planner-And-Tracker.git ~/.local/share/implementation-planner-and-tracker
+ln -s ~/.local/share/implementation-planner-and-tracker/skills/implementation-planner ~/.claude/skills/implementation-planner
+```
+
+Optional Dumplink helper:
+
+```bash
 ln -s ~/.local/share/implementation-planner-and-tracker/skills/dumplink ~/.claude/skills/dumplink
 ```
 
 Then reload skills/plugins in Claude Code.
 
-## Example prompt
+## Optional Claude Code hook
+
+This repo includes a lightweight PostToolUse hook that reminds agents to keep planning artifacts aligned when code or planning docs change.
+
+Install it:
+
+```bash
+mkdir -p ~/.claude/hooks
+ln -s ~/.local/share/implementation-planner-and-tracker/hooks/implementation-planning-ripple.sh ~/.claude/hooks/implementation-planning-ripple.sh
+chmod +x ~/.local/share/implementation-planner-and-tracker/hooks/implementation-planning-ripple.sh
+```
+
+Then add it to Claude settings:
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/implementation-planning-ripple.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+The hook is intentionally non-blocking. It prints reminders when a changed file suggests the technical design plan, slices, dependency foliation, tracker, or handoff packet may need to be updated.
+
+## Template
+
+Use `templates/implementation-plan.md` when you want a stable output artifact instead of a one-off response.
+
+Example:
 
 ```text
-Use the Dumplink skill.
-Turn this shaped project into vertical task groups, sequence them by risk and dependency, identify scope cuts, and produce an agent handoff packet for the first task group.
+Use the implementation-planner skill and write the result using templates/implementation-plan.md.
+```
+
+## Example prompts
+
+```text
+Use the implementation-planner skill.
+Turn this PRD into a kickoff doc, technical design plan, dependency foliation, parallelization plan, initial vertical slices, and agent handoff packet for the first slice.
+```
+
+```text
+Use the implementation-planner skill on this shaped package of work.
+Preserve the appetite and non-goals, map the technical surface area, foliate dependencies, sequence by unknowns/dependencies, and produce the first 3 implementation slices.
+```
+
+```text
+Use the Dumplink skill only.
+Dump the work, cluster it into task groups, foliate dependencies, identify parallelizable groups, and sequence the groups by unknowns, risk, and dependency.
 ```
 
 ## Source attribution
 
-This skill is adapted from Dumplink:
+This repo adapts ideas from Dumplink and Shape Up-style implementation planning:
 
-- Source repo: https://github.com/klausbreyer/dump.link
-- Product/site: https://dump.link
+- Dumplink source repo: https://github.com/klausbreyer/dump.link
+- Dumplink site: https://dump.link
+- Ryan Singer on systemizing kickoff: https://www.ryansinger.co/systemizing-kick-off/
+- Ryan Singer on done being relative to what comes next: https://www.ryansinger.co/done-is-relative-to-what-comes-next/
+- Ryan Singer on going beyond to-dos: https://www.ryansinger.co/beyond-to-dos/
+- Ryan Singer on interrelationship diagrams: https://www.ryansinger.co/unfolding-the-interrelationship-diagram/
+- Ryan Singer on dependencies vs. unknowns when sequencing: https://www.ryansinger.co/dependencies-vs-unknowns-when-sequencing/
 
-Original concept/design attribution belongs to Klaus Breyer and Matthew Lane as described in the Dumplink source project.
+Original Dumplink concept/design attribution belongs to Klaus Breyer and Matthew Lane as described in the Dumplink source project.
