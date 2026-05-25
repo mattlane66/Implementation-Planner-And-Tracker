@@ -16,9 +16,9 @@ When planning, prefer:
 - tables
 - lightweight pseudo-structures
 - Mermaid diagrams when helpful
-- stable IDs for requirements, surfaces, risks, tasks, task groups, slices, dependencies, cuts, and acceptance checks
+- stable IDs for requirements, surfaces, risks, tasks, task groups, slices, dependencies, layers, parallelization sets, cuts, and acceptance checks
 
-When implementing, preserve shaped intent and update the plan if implementation discoveries change risk, sequence, scope, or dependencies.
+When implementing, preserve shaped intent and update the plan if implementation discoveries change risk, sequence, scope, parallelization, or dependencies.
 
 ## Core workflow
 
@@ -29,19 +29,33 @@ When implementing, preserve shaped intent and update the plan if implementation 
 5. Dump likely work without sequencing too early.
 6. Cluster tasks into vertical task groups / scopes.
 7. Map interrelationships between task groups.
-8. Sequence by risk, dependency, and what unlocks the next useful behavior.
-9. Define initial vertical implementation slices.
-10. Define scope cuts and deferrals before the appetite is exhausted.
-11. Write acceptance checks.
-12. Feed one active slice or task group to the implementation agent.
-13. Reflect and update the plan when implementation reality changes assumptions.
+8. Foliate the dependency graph into layers.
+9. Decide parallelization using dependencies plus unknowns and capacity.
+10. Sequence by risk, dependency, and what unlocks the next useful behavior.
+11. Define initial vertical implementation slices.
+12. Define scope cuts and deferrals before the appetite is exhausted.
+13. Write acceptance checks.
+14. Feed one active slice or task group to the implementation agent.
+15. Reflect and update the plan when implementation reality changes assumptions.
+
+## Foliation rule
+
+Dependencies and unknowns are different dimensions.
+
+First use the interrelationship map to answer the dependency-only question:
+
+> If all unknowns were equal, what order is valid based on what must feed what?
+
+Then create dependency layers. Groups in the same layer are dependency-parallel candidates, but they are not automatically safe to run in parallel.
+
+After layering, use unknown severity, time sensitivity, scarce people, fragile code areas, external dependencies, and decision-maker bottlenecks to decide actual sequencing and parallelization.
 
 ## Skill map
 
 Use the repo skills as reusable instructions:
 
-- `implementation-planner/` — primary skill. Turn a PRD or shaped package into a kickoff doc, technical design plan, vertical slices, tracker, and agent handoff packets.
-- `dumplink/` — helper skill. Turn shaped work into raw task dumps, vertical task groups, dependency sequence, risk state, and scope cuts.
+- `implementation-planner/` — primary skill. Turn a PRD or shaped package into a kickoff doc, technical design plan, dependency foliation, parallelization plan, vertical slices, tracker, and agent handoff packets.
+- `dumplink/` — helper skill. Turn shaped work into raw task dumps, vertical task groups, dependency layers, parallelization plan, risk state, and scope cuts.
 
 ## Authority order
 
@@ -68,6 +82,7 @@ Do not collapse:
 - technical design into code before slice selection
 - vertical task groups into frontend/backend silos
 - unknowns into vague engineering tasks
+- dependency-parallel work into automatically parallel work
 - scope cuts into failures
 
 ## Context feeding
@@ -83,6 +98,8 @@ Before implementation work, create or request a compact handoff packet that incl
 - relevant requirements
 - relevant technical design decisions
 - relevant tasks
+- dependency layer
+- parallelization decision
 - known unknowns
 - dependencies
 - non-goals and exclusions
@@ -98,6 +115,8 @@ Preserve IDs such as:
 - `RISK-01` for risks or unknowns
 - `T-01` for tasks
 - `TG-01` for task groups
+- `L1` for dependency layers
+- `PSET-01` for parallelization candidate sets
 - `SLICE-01` for implementation slices
 - `D-01` for dependencies
 - `CUT-01` for scope cuts
@@ -139,4 +158,5 @@ Before declaring work complete, check:
 - stable IDs were preserved
 - technical-design assumptions were updated if implementation contradicted them
 - task-group risk/dependency assumptions were updated if they changed
+- dependency foliation and parallelization decisions were updated if they changed
 - implementation work, when present, maps back to slice/task-group and acceptance-check IDs
