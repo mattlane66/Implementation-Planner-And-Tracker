@@ -7,9 +7,10 @@ The tool is meant to sit between shaping and implementation. It does **not** rep
 - a builder-facing kickoff doc
 - a technical design outline
 - a scope / task-group map
+- dependency foliation and parallelization decisions
 - the first vertical implementation slices
 - compact handoff packets for Codex, Claude Code, Cursor, or a human engineer
-- a lightweight tracker based on unknowns, dependencies, and slice progress
+- a lightweight tracker based on unknowns, dependencies, layers, parallelization, and slice progress
 
 ## Core idea
 
@@ -20,11 +21,13 @@ Most planning tools turn work into to-dos too early. This repo uses a different 
 3. **Dump the work** — list likely implementation work without sequencing too early.
 4. **Cluster into scopes / task groups** — group tasks by what can be completed and judged together.
 5. **Map interrelationships** — show which task groups feed or unlock others.
-6. **Sequence by risk and dependency** — start where unknowns can sink the project if discovered late.
-7. **Define initial slices** — make the first few slices independently judgeable and agent-handoff ready.
-8. **Track by what is known, unknown, done, cut, or deferred** — not by raw task count.
+6. **Foliate dependencies** — convert the interrelationship graph into dependency layers and candidate parallel work sets.
+7. **Decide parallelization** — distinguish what can run in parallel by dependency from what should run in parallel after considering unknowns and capacity.
+8. **Sequence by risk, dependency, and stop condition** — start where unknowns can sink the project if discovered late.
+9. **Define initial slices** — make the first few slices independently judgeable and agent-handoff ready.
+10. **Track by what is known, unknown, done, cut, or deferred** — not by raw task count.
 
-Dumplink's DUMP → CLUSTER → SEQUENCE method is one important subroutine inside this larger implementation-planning tool.
+Dumplink's DUMP → CLUSTER → FOLIATE → SEQUENCE method is one important subroutine inside this larger implementation-planning tool.
 
 ## What this produces
 
@@ -39,13 +42,15 @@ Use `/implementation-planner` to create:
 - raw task dump
 - vertical task groups / scopes
 - dependency and interrelationship map
+- foliated dependency layers
+- parallelization plan
 - initial implementation slices
 - scope cuts / deferrals
 - acceptance checks
 - agent handoff packets
 - tracker table
 
-Use `/dumplink` when you only need the narrower DUMP → CLUSTER → SEQUENCE task-grouping move.
+Use `/dumplink` when you only need the narrower DUMP → CLUSTER → FOLIATE → SEQUENCE task-grouping move.
 
 ## When to use it
 
@@ -88,17 +93,17 @@ Then reload skills/plugins in Claude Code.
 
 ```text
 Use the implementation-planner skill.
-Turn this PRD into a kickoff doc, technical design plan, initial vertical slices, and agent handoff packet for the first slice.
+Turn this PRD into a kickoff doc, technical design plan, dependency foliation, parallelization plan, initial vertical slices, and agent handoff packet for the first slice.
 ```
 
 ```text
 Use the implementation-planner skill on this shaped package of work.
-Preserve the appetite and non-goals, map the technical surface area, sequence by unknowns/dependencies, and produce the first 3 implementation slices.
+Preserve the appetite and non-goals, map the technical surface area, foliate dependencies, sequence by unknowns/dependencies, and produce the first 3 implementation slices.
 ```
 
 ```text
 Use the Dumplink skill only.
-Dump the work, cluster it into task groups, and sequence the groups by risk and dependency.
+Dump the work, cluster it into task groups, foliate dependencies, identify parallelizable groups, and sequence the groups by unknowns, risk, and dependency.
 ```
 
 ## Source attribution
@@ -111,5 +116,6 @@ This repo adapts ideas from Dumplink and Shape Up-style implementation planning:
 - Ryan Singer on done being relative to what comes next: https://www.ryansinger.co/done-is-relative-to-what-comes-next/
 - Ryan Singer on going beyond to-dos: https://www.ryansinger.co/beyond-to-dos/
 - Ryan Singer on interrelationship diagrams: https://www.ryansinger.co/unfolding-the-interrelationship-diagram/
+- Ryan Singer on dependencies vs. unknowns when sequencing: https://www.ryansinger.co/dependencies-vs-unknowns-when-sequencing/
 
 Original Dumplink concept/design attribution belongs to Klaus Breyer and Matthew Lane as described in the Dumplink source project.
