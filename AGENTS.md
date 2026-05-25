@@ -1,6 +1,6 @@
 # Agent Instructions
 
-Use this repo to turn shaped product work into implementation plans that preserve intent while becoming concrete enough to build.
+Use this repo to turn a PRD or shaped package of work into a technical design plan that preserves intent while becoming concrete enough for humans and agents to build.
 
 These instructions are tool-neutral. They are intended for Claude Code, Cursor, Codex, and other agentic coding or writing environments.
 
@@ -8,7 +8,7 @@ These instructions are tool-neutral. They are intended for Claude Code, Cursor, 
 
 Default to implementation planning before implementation.
 
-Do not write production code unless the user explicitly selects a Dumplink task group to build or asks for implementation.
+Do not write production code unless the user explicitly selects an implementation slice or task group to build.
 
 When planning, prefer:
 
@@ -16,39 +16,44 @@ When planning, prefer:
 - tables
 - lightweight pseudo-structures
 - Mermaid diagrams when helpful
-- stable IDs for tasks, task groups, dependencies, cuts, and acceptance checks
+- stable IDs for requirements, surfaces, risks, tasks, task groups, slices, dependencies, cuts, and acceptance checks
 
 When implementing, preserve shaped intent and update the plan if implementation discoveries change risk, sequence, scope, or dependencies.
 
 ## Core workflow
 
-1. Restate the shaped project boundary.
-2. Dump likely tasks without sequencing too early.
-3. Cluster tasks into vertical task groups.
-4. Mark unknown / known / done risk states.
-5. Map dependencies between task groups.
-6. Sequence by risk, dependency, and what unlocks the next useful behavior.
-7. Define scope cuts before the appetite is exhausted.
-8. Write acceptance checks.
-9. Feed one active task group to the implementation agent.
-10. Reflect and update the plan when implementation reality changes the assumptions.
+1. Check readiness of the PRD or shaped package.
+2. Restate the project boundary: appetite, outcome, selected approach, non-goals, and constraints.
+3. Produce a builder-facing kickoff doc.
+4. Unfold the technical design: affected surfaces, system boundaries, data/state, dependencies, integrations, and risks.
+5. Dump likely work without sequencing too early.
+6. Cluster tasks into vertical task groups / scopes.
+7. Map interrelationships between task groups.
+8. Sequence by risk, dependency, and what unlocks the next useful behavior.
+9. Define initial vertical implementation slices.
+10. Define scope cuts and deferrals before the appetite is exhausted.
+11. Write acceptance checks.
+12. Feed one active slice or task group to the implementation agent.
+13. Reflect and update the plan when implementation reality changes assumptions.
 
 ## Skill map
 
 Use the repo skills as reusable instructions:
 
-- `dumplink/` — turn shaped work into raw task dumps, vertical task groups, dependency sequence, risk state, scope cuts, and agent handoff packets.
+- `implementation-planner/` — primary skill. Turn a PRD or shaped package into a kickoff doc, technical design plan, vertical slices, tracker, and agent handoff packets.
+- `dumplink/` — helper skill. Turn shaped work into raw task dumps, vertical task groups, dependency sequence, risk state, and scope cuts.
 
 ## Authority order
 
 When artifacts disagree, use this default authority order unless the user says otherwise:
 
 1. the user’s latest explicit instruction
-2. selected Dumplink task group / active implementation slice
-3. selected shaped project direction
-4. original frame / pitch / requirements
-5. raw notes and transcripts
-6. rejected alternatives and brainstorming
+2. selected implementation slice or Dumplink task group
+3. technical design plan / kickoff doc
+4. selected shaped project direction or PRD
+5. original frame / pitch / requirements
+6. raw notes and transcripts
+7. rejected alternatives and brainstorming
 
 Do not treat a newer brainstorming note as a higher-authority artifact unless it explicitly changes the selected direction.
 
@@ -60,6 +65,7 @@ Do not collapse:
 
 - shaped intent into a ticket pile
 - requirements into implementation chores
+- technical design into code before slice selection
 - vertical task groups into frontend/backend silos
 - unknowns into vague engineering tasks
 - scope cuts into failures
@@ -70,22 +76,29 @@ Do not paste or load the whole planning stack by default.
 
 Before implementation work, create or request a compact handoff packet that includes:
 
-- active task group
+- active slice or task group
 - source artifacts
+- authority order
 - must-preserve constraints
+- relevant requirements
+- relevant technical design decisions
 - relevant tasks
 - known unknowns
 - dependencies
 - non-goals and exclusions
-- acceptance check
+- acceptance checks
 - stop condition
 
 ## Stable IDs
 
 Preserve IDs such as:
 
+- `REQ-01` for requirements / criteria
+- `SURF-01` for affected surfaces
+- `RISK-01` for risks or unknowns
 - `T-01` for tasks
 - `TG-01` for task groups
+- `SLICE-01` for implementation slices
 - `D-01` for dependencies
 - `CUT-01` for scope cuts
 - `AC-01` for acceptance checks
@@ -94,7 +107,7 @@ Do not rename stable IDs just to improve wording. If the meaning changes, create
 
 ## Drift protocol
 
-If implementation reality conflicts with the selected task group or sequence, do not silently patch around the plan.
+If implementation reality conflicts with the selected plan, slice, or task group, do not silently patch around the plan.
 
 Return:
 
@@ -110,7 +123,7 @@ The implementation reality is:
 Options:
 1. Update the implementation to match the plan.
 2. Update the plan because the original assumption was wrong.
-3. Split the task group and defer the conflicting part.
+3. Split the slice/task group and defer the conflicting part.
 
 Recommended move:
 - ...
@@ -124,5 +137,6 @@ Before declaring work complete, check:
 - the shaped intent was preserved
 - non-goals were preserved
 - stable IDs were preserved
+- technical-design assumptions were updated if implementation contradicted them
 - task-group risk/dependency assumptions were updated if they changed
-- implementation work, when present, maps back to task-group and acceptance-check IDs
+- implementation work, when present, maps back to slice/task-group and acceptance-check IDs
