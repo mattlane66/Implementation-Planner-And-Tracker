@@ -71,6 +71,7 @@ skills/dumplink/SKILL.md                 # narrower Dumplink task-grouping helpe
 dumplink/SKILL.md                        # root mirror of Dumplink helper
 templates/implementation-plan.md         # reusable output template
 hooks/implementation-planning-ripple.sh  # optional Claude Code hook
+examples/                               # worked examples
 AGENTS.md                                # tool-neutral agent instructions
 ```
 
@@ -135,6 +136,10 @@ Example:
 ```text
 Use the implementation-planner skill and write the result using templates/implementation-plan.md.
 ```
+
+## Examples
+
+See `examples/simple-feature-prd/` for a tiny PRD and a completed implementation plan. It shows the intended output shape for agents to imitate.
 
 ## Example prompts
 
