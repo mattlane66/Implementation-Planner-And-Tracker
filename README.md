@@ -69,6 +69,8 @@ skills/implementation-planner/SKILL.md   # primary Claude-style skill packaging
 implementation-planner/SKILL.md          # root mirror for direct skill installs or simple linking
 skills/dumplink/SKILL.md                 # narrower Dumplink task-grouping helper
 dumplink/SKILL.md                        # root mirror of Dumplink helper
+templates/implementation-plan.md         # reusable output template
+hooks/implementation-planning-ripple.sh  # optional Claude Code hook
 AGENTS.md                                # tool-neutral agent instructions
 ```
 
@@ -88,6 +90,51 @@ ln -s ~/.local/share/implementation-planner-and-tracker/skills/dumplink ~/.claud
 ```
 
 Then reload skills/plugins in Claude Code.
+
+## Optional Claude Code hook
+
+This repo includes a lightweight PostToolUse hook that reminds agents to keep planning artifacts aligned when code or planning docs change.
+
+Install it:
+
+```bash
+mkdir -p ~/.claude/hooks
+ln -s ~/.local/share/implementation-planner-and-tracker/hooks/implementation-planning-ripple.sh ~/.claude/hooks/implementation-planning-ripple.sh
+chmod +x ~/.local/share/implementation-planner-and-tracker/hooks/implementation-planning-ripple.sh
+```
+
+Then add it to Claude settings:
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/implementation-planning-ripple.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+The hook is intentionally non-blocking. It prints reminders when a changed file suggests the technical design plan, slices, dependency foliation, tracker, or handoff packet may need to be updated.
+
+## Template
+
+Use `templates/implementation-plan.md` when you want a stable output artifact instead of a one-off response.
+
+Example:
+
+```text
+Use the implementation-planner skill and write the result using templates/implementation-plan.md.
+```
 
 ## Example prompts
 
