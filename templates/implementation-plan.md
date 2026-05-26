@@ -142,7 +142,103 @@ flowchart LR
 |---|---|---|---|---|---|---|---|
 | SLICE-01 | slice | not-started | L1 |  |  |  |  |
 
-## 16. Agent handoff packet
+## 16. Visual Pack
+
+The tables above are the source of truth. The visuals below are projections for review, communication, and agent handoff. See `docs/visual-pack.md` for patterns.
+
+### 16.1 Dump Board
+
+```text
+DUMP
+┌────────────────────────────────────┐
+│ T-01  ...                          │
+│ T-02  ...                          │
+│ T-03  ...                          │
+└────────────────────────────────────┘
+```
+
+### 16.2 Task Group Grid
+
+```text
+TASK GROUP GRID
+
+┌──────────────────────┐ ┌──────────────────────┐
+│ TG-01: Name          │ │ TG-02: Name          │
+│ T-01, T-04           │ │ T-02, T-07           │
+│ State: figuring-out  │ │ State: not-started   │
+└──────────────────────┘ └──────────────────────┘
+```
+
+### 16.3 Risk State Board
+
+```text
+TG-01 Name
+Unknown:  / 
+Known:    / 
+Risk:    [░░░░░░░░░░] not-started
+```
+
+### 16.4 Interrelationship Diagram
+
+```mermaid
+flowchart LR
+  %% TG01["TG-01: Name"] --> TG02["TG-02: Name"]
+```
+
+### 16.5 Foliation / Layer Diagram
+
+```mermaid
+flowchart LR
+  subgraph L1["Layer L1"]
+    TG01["TG-01: Name"]
+  end
+
+  subgraph L2["Layer L2"]
+    TG02["TG-02: Name"]
+  end
+
+  TG01 --> TG02
+```
+
+### 16.6 Parallelization Map
+
+```text
+PSET-01:
+Groups:
+Dependency status:
+Unknown profile:
+Capacity conflict:
+Decision:
+Rationale:
+```
+
+### 16.7 Appetite / Progress Snapshot
+
+```text
+Appetite:
+Elapsed:
+Remaining:
+Time: [░░░░░░░░░░░░░░░░░░░░] 0%
+
+Task groups:
+Done:
+Figured out:
+Figuring out:
+Not started:
+Cut:
+
+Scope pressure:
+Reason:
+```
+
+### 16.8 Slice Sequence Map
+
+```mermaid
+flowchart LR
+  S1["SLICE-01: Name\nStop: ..."] --> S2["SLICE-02: Name\nStop: ..."]
+```
+
+## 17. Agent handoff packet
 
 ```text
 Active slice:
