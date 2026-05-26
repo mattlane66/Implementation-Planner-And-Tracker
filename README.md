@@ -1,12 +1,12 @@
 # Implementation Planner and Tracker
 
-A tool / skill repo for turning a PRD or shaped package of work into a technical design plan that humans and agents can actually build from.
+A tool / skill repo for turning a shaped package of work (input design doc/PRD) into a technical design plan that humans and agents can actually build from.
 
-The tool is meant to sit between shaping and implementation. It does **not** replace shaping, Spec Kit, an engineer's judgment, or a code-aware implementation agent. Its job is to preserve the intent of the shaped work while translating it into:
+The tool is meant to sit between shaping and implementation. It does **not** replace shaping, an engineer's judgment, or a code-aware implementation agent. Its job is to preserve the intent of the shaped work while translating it into:
 
 - a builder-facing kickoff doc
 - a technical design outline
-- a scope / task-group map
+- a task-group map
 - dependency foliation and parallelization decisions
 - the first vertical implementation slices
 - compact handoff packets for Codex, Claude Code, Cursor, or a human engineer
@@ -16,15 +16,15 @@ The tool is meant to sit between shaping and implementation. It does **not** rep
 
 Most planning tools turn work into to-dos too early. This repo uses a different sequence:
 
-1. **Preserve the shaped intent** — restate the problem, appetite, outcome, selected approach, non-goals, and constraints.
+1. **Preserve the shaped intent** — given the plan's context, it understands the direction of the work.
 2. **Unfold the technical shape** — identify affected surfaces, system boundaries, data/state, integration points, risks, and open questions.
 3. **Dump the work** — list likely implementation work without sequencing too early.
-4. **Cluster into scopes / task groups** — group tasks by what can be completed and judged together.
-5. **Map interrelationships** — show which task groups feed or unlock others.
-6. **Foliate dependencies** — convert the interrelationship graph into dependency layers and candidate parallel work sets.
-7. **Decide parallelization** — distinguish what can run in parallel by dependency from what should run in parallel after considering unknowns and capacity.
-8. **Sequence by risk, dependency, and stop condition** — start where unknowns can sink the project if discovered late.
-9. **Define initial slices** — make the first few slices independently judgeable and agent-handoff ready.
+4. **Cluster into task groups** — group tasks by what can be completed and judged together.
+5. **Define initial slices** — make the first few slices independently judgeable and agent-handoff ready.
+6. **Map interrelationships** — show which task groups feed or unlock others.
+7. **Foliate dependencies** — convert the interrelationship graph into dependency layers and candidate parallel work sets.
+8. **Decide parallelization** — distinguish what can run in parallel by dependency from what should run in parallel after considering unknowns and capacity.
+9. **Sequence by risk, dependency, and stop condition** — start where unknowns can sink the project if discovered late.
 10. **Track by what is known, unknown, done, cut, or deferred** — not by raw task count.
 
 Dumplink's DUMP → CLUSTER → FOLIATE → SEQUENCE method is one important subroutine inside this larger implementation-planning tool.
@@ -40,11 +40,10 @@ Use `/implementation-planner` to create:
 - affected system map
 - assumptions and missing-information register
 - raw task dump
-- vertical task groups / scopes
+- vertical task groups and initial implementation slices
 - dependency and interrelationship map
 - foliated dependency layers
 - parallelization plan
-- initial implementation slices
 - scope cuts / deferrals
 - acceptance checks
 - agent handoff packets
@@ -58,7 +57,7 @@ Use this after a product direction has been selected and the next question is:
 
 > How do we hand this to builders without turning it into a flat ticket pile?
 
-It is best for deliberate build-cycle work: meaningful product bets, shaped features, PRDs that need technical interpretation, and implementation plans that need to stay whole while becoming concrete enough for agents or engineers to build.
+It is best for deliberate build-cycle work: meaningful discrete product bets, shaped features/PRDs that need technical interpretation, and implementation plans that need to stay whole while becoming concrete enough for agents and/or engineers to build.
 
 Do not use it as a generic ticket backlog for reactive bugs, support requests, or interrupt-driven work.
 
@@ -163,11 +162,5 @@ Dump the work, cluster it into task groups, foliate dependencies, identify paral
 This repo adapts ideas from Dumplink and Shape Up-style implementation planning:
 
 - Dumplink source repo: https://github.com/klausbreyer/dump.link
-- Dumplink site: https://dump.link
-- Ryan Singer on systemizing kickoff: https://www.ryansinger.co/systemizing-kick-off/
-- Ryan Singer on done being relative to what comes next: https://www.ryansinger.co/done-is-relative-to-what-comes-next/
-- Ryan Singer on going beyond to-dos: https://www.ryansinger.co/beyond-to-dos/
-- Ryan Singer on interrelationship diagrams: https://www.ryansinger.co/unfolding-the-interrelationship-diagram/
-- Ryan Singer on dependencies vs. unknowns when sequencing: https://www.ryansinger.co/dependencies-vs-unknowns-when-sequencing/
 
 Original Dumplink concept/design attribution belongs to Klaus Breyer and Matthew Lane as described in the Dumplink source project.
