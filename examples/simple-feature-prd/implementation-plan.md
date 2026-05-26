@@ -244,7 +244,187 @@ flowchart LR
 | SLICE-03 | slice | figuring-it-out | L2 | Active-list state boundary | Saved list replaces active list | TG-01 | Prioritize before polish. |
 | SLICE-04 | slice | not-started | L3/L4 | None major | End-to-end demo | TG-03, TG-05, TG-04 | Final verification. |
 
-## 16. Agent handoff packet
+## 16. Visual Pack
+
+The tables above are the source of truth. These visuals are review projections for humans and agents.
+
+### 16.1 Dump Board
+
+```text
+DUMP
+┌────────────────────────────────────────────────────────────┐
+│ T-01  Inspect active list item shape                       │
+│ T-02  Spike save/load item snapshot                        │
+│ T-03  Define saved-list model                              │
+│ T-04  Add create saved-list service/API                    │
+│ T-05  Add list saved-lists service/API                     │
+│ T-06  Add get saved-list detail service/API                │
+│ T-07  Add save current list UI                             │
+│ T-08  Add saved-lists index UI                             │
+│ T-09  Decide replace vs append                             │
+│ T-10  Implement apply saved list to active list            │
+│ T-11  Add minimal empty/error states                       │
+│ T-12  Add acceptance tests/manual checks                   │
+│ T-13  Update tracker/handoff packet after discoveries      │
+└────────────────────────────────────────────────────────────┘
+```
+
+### 16.2 Task Group Grid
+
+```text
+TASK GROUP GRID
+
+┌──────────────────────────────┐ ┌──────────────────────────────┐
+│ TG-01: Prove persistence     │ │ TG-02: Save list backend     │
+│ Tasks: T-01, T-02            │ │ Tasks: T-03, T-04            │
+│ State: figuring-out          │ │ State: not-started           │
+└──────────────────────────────┘ └──────────────────────────────┘
+
+┌──────────────────────────────┐ ┌──────────────────────────────┐
+│ TG-03: Saved lists index     │ │ TG-04: Reuse saved list      │
+│ Tasks: T-05, T-08, T-11      │ │ Tasks: T-06, T-09, T-10      │
+│ State: not-started           │ │ State: figuring-out          │
+└──────────────────────────────┘ └──────────────────────────────┘
+
+┌──────────────────────────────┐ ┌──────────────────────────────┐
+│ TG-05: Save affordance UI    │ │ TG-06: Verify and package    │
+│ Tasks: T-07                  │ │ Tasks: T-12, T-13            │
+│ State: not-started           │ │ State: not-started           │
+└──────────────────────────────┘ └──────────────────────────────┘
+```
+
+### 16.3 Risk State Board
+
+```text
+RISK STATE BOARD
+
+TG-01 Prove persistence shape
+Unknown: 2 / 2
+Known:   0 / 2
+Risk:    [██████████] figuring-out
+
+TG-02 Save list backend
+Unknown: 0 / 2
+Known:   0 / 2
+Risk:    [░░░░░░░░░░] not-started
+
+TG-03 Saved lists index backend/UI
+Unknown: 0 / 3
+Known:   0 / 3
+Risk:    [░░░░░░░░░░] not-started
+
+TG-04 Reuse saved list
+Unknown: 2 / 3
+Known:   1 / 3
+Risk:    [███████░░░] figuring-out
+
+TG-05 Save affordance UI
+Unknown: 0 / 1
+Known:   0 / 1
+Risk:    [░░░░░░░░░░] not-started
+
+TG-06 Verify and package
+Unknown: 0 / 2
+Known:   0 / 2
+Risk:    [░░░░░░░░░░] not-started
+```
+
+### 16.4 Interrelationship Diagram
+
+```mermaid
+flowchart LR
+  TG01["TG-01: Prove persistence shape"] -- derisks/unlocks --> TG02["TG-02: Save list backend"]
+  TG01 -- derisks --> TG04["TG-04: Reuse saved list"]
+  TG02 -- enables --> TG05["TG-05: Save affordance UI"]
+  TG02 -- enables --> TG03["TG-03: Saved lists index"]
+  TG05 -- enables verification --> TG06["TG-06: Verify and package"]
+  TG03 -- enables verification --> TG06
+  TG04 -- enables verification --> TG06
+```
+
+### 16.5 Foliation / Layer Diagram
+
+```mermaid
+flowchart LR
+  subgraph L1["Layer L1"]
+    TG01["TG-01: Prove persistence shape"]
+  end
+
+  subgraph L2["Layer L2"]
+    TG04["TG-04: Reuse saved list"]
+    TG02["TG-02: Save list backend"]
+  end
+
+  subgraph L3["Layer L3"]
+    TG05["TG-05: Save affordance UI"]
+    TG03["TG-03: Saved lists index"]
+  end
+
+  subgraph L4["Layer L4"]
+    TG06["TG-06: Verify and package"]
+  end
+
+  TG01 --> TG04
+  TG01 --> TG02
+  TG02 --> TG05
+  TG02 --> TG03
+  TG04 --> TG06
+  TG05 --> TG06
+  TG03 --> TG06
+```
+
+### 16.6 Parallelization Map
+
+```text
+PARALLELIZATION MAP
+
+PSET-01: TG-02 Save list backend + TG-04 Reuse saved list
+Dependency status: same layer after TG-01
+Unknown profile: TG-04 has higher state-boundary unknown
+Capacity conflict: possible if same engineer owns active-list state and persistence
+Decision: start TG-04 spike first; TG-02 can proceed if capacity allows
+Rationale: reuse may expose hidden active-list boundary issues
+
+PSET-02: TG-03 Saved lists index + TG-05 Save affordance UI
+Dependency status: same layer after TG-02
+Unknown profile: both mostly known
+Capacity conflict: low if UI/API work can split cleanly
+Decision: parallelize if designer/engineer capacity exists
+Rationale: index and save affordance are separable once backend exists
+```
+
+### 16.7 Appetite / Progress Snapshot
+
+```text
+APPETITE SNAPSHOT
+
+Appetite: 2 weeks
+Elapsed:  0 weeks
+Remaining: 2 weeks
+Time:     [░░░░░░░░░░░░░░░░░░░░] 0%
+
+Task groups:
+Done:          0 / 6
+Figured out:   0 / 6
+Figuring out:  2 / 6
+Not started:   4 / 6
+Cut:           0 / 6
+
+Scope pressure: medium
+Reason: appetite is short and two core groups carry important unknowns, but no time has elapsed yet.
+```
+
+### 16.8 Slice Sequence Map
+
+```mermaid
+flowchart LR
+  S1["SLICE-01: Persistence proof\nStop: item snapshot reloads"] -->
+  S2["SLICE-02: Save current list\nStop: named saved list exists"] -->
+  S3["SLICE-03: Reuse saved list\nStop: active list replaced"] -->
+  S4["SLICE-04: Find and verify\nStop: acceptance checks pass"]
+```
+
+## 17. Agent handoff packet
 
 ```text
 Active slice: SLICE-01 — Persistence proof
