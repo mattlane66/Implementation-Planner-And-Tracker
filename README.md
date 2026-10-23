@@ -9,6 +9,7 @@ The tool is meant to sit between shaping and implementation. It does **not** rep
 - a task-group map
 - dependency foliation and parallelization decisions
 - the first vertical implementation slices
+- a Visual Pack with Dumplink-style visual projections
 - compact handoff packets for Codex, Claude Code, Cursor, or a human engineer
 - a lightweight tracker based on unknowns, dependencies, layers, parallelization, and slice progress
 
@@ -25,7 +26,8 @@ Most planning tools turn work into to-dos too early. This repo uses a different 
 7. **Foliate dependencies** — convert the interrelationship graph into dependency layers and candidate parallel work sets.
 8. **Decide parallelization** — distinguish what can run in parallel by dependency from what should run in parallel after considering unknowns and capacity.
 9. **Sequence by risk, dependency, and stop condition** — start where unknowns can sink the project if discovered late.
-10. **Track by what is known, unknown, done, cut, or deferred** — not by raw task count.
+10. **Create the Visual Pack** — render dump board, task group grid, risk board, interrelationship diagram, foliation layers, parallelization map, appetite snapshot, and slice sequence.
+11. **Track by what is known, unknown, done, cut, or deferred** — not by raw task count.
 
 Dumplink's DUMP → CLUSTER → FOLIATE → SEQUENCE method is one important subroutine inside this larger implementation-planning tool.
 
@@ -46,8 +48,20 @@ Use `/implementation-planner` to create:
 - parallelization plan
 - scope cuts / deferrals
 - acceptance checks
-- agent handoff packets
 - tracker table
+- Visual Pack
+- agent handoff packets
+
+The Visual Pack includes:
+
+- Dump Board
+- Task Group Grid
+- Risk State Board
+- Interrelationship Diagram
+- Foliation / Layer Diagram
+- Parallelization Map
+- Appetite / Progress Snapshot
+- Slice Sequence Map
 
 Use `/dumplink` when you only need the narrower DUMP → CLUSTER → FOLIATE → SEQUENCE task-grouping move.
 
@@ -68,6 +82,7 @@ skills/implementation-planner/SKILL.md   # primary Claude-style skill packaging
 implementation-planner/SKILL.md          # root mirror for direct skill installs or simple linking
 skills/dumplink/SKILL.md                 # narrower Dumplink task-grouping helper
 dumplink/SKILL.md                        # root mirror of Dumplink helper
+docs/visual-pack.md                      # visual output patterns
 templates/implementation-plan.md         # reusable output template
 hooks/implementation-planning-ripple.sh  # optional Claude Code hook
 examples/                               # worked examples
@@ -136,6 +151,16 @@ Example:
 Use the implementation-planner skill and write the result using templates/implementation-plan.md.
 ```
 
+## Visual Pack
+
+Use `docs/visual-pack.md` when you want the plan to include reviewable visual projections similar in spirit to Dumplink: task boards, task-group grids, risk-state bars, interrelationship diagrams, dependency layers, appetite snapshots, and slice sequence maps.
+
+Example:
+
+```text
+Use the implementation-planner skill and include the full Visual Pack.
+```
+
 ## Examples
 
 See `examples/simple-feature-prd/` for a tiny PRD and a completed implementation plan. It shows the intended output shape for agents to imitate.
@@ -144,12 +169,12 @@ See `examples/simple-feature-prd/` for a tiny PRD and a completed implementation
 
 ```text
 Use the implementation-planner skill.
-Turn this PRD into a kickoff doc, technical design plan, dependency foliation, parallelization plan, initial vertical slices, and agent handoff packet for the first slice.
+Turn this PRD into a kickoff doc, technical design plan, dependency foliation, parallelization plan, visual pack, initial vertical slices, and agent handoff packet for the first slice.
 ```
 
 ```text
 Use the implementation-planner skill on this shaped package of work.
-Preserve the appetite and non-goals, map the technical surface area, foliate dependencies, sequence by unknowns/dependencies, and produce the first 3 implementation slices.
+Preserve the appetite and non-goals, map the technical surface area, foliate dependencies, sequence by unknowns/dependencies, produce the first 3 implementation slices, and include a Visual Pack.
 ```
 
 ```text

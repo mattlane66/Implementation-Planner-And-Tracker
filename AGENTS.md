@@ -16,9 +16,10 @@ When planning, prefer:
 - tables
 - lightweight pseudo-structures
 - Mermaid diagrams when helpful
+- plain text visual boards when Mermaid is not enough
 - stable IDs for requirements, surfaces, risks, tasks, task groups, slices, dependencies, layers, parallelization sets, cuts, and acceptance checks
 
-When implementing, preserve shaped intent and update the plan if implementation discoveries change risk, sequence, scope, parallelization, or dependencies.
+When implementing, preserve shaped intent and update the plan if implementation discoveries change risk, sequence, scope, parallelization, visuals, or dependencies.
 
 ## Core workflow
 
@@ -35,8 +36,9 @@ When implementing, preserve shaped intent and update the plan if implementation 
 11. Define initial vertical implementation slices.
 12. Define scope cuts and deferrals before the appetite is exhausted.
 13. Write acceptance checks.
-14. Feed one active slice or task group to the implementation agent.
-15. Reflect and update the plan when implementation reality changes assumptions.
+14. Produce the Visual Pack: dump board, task group grid, risk board, interrelationship diagram, foliation diagram, parallelization map, appetite snapshot, and slice sequence map.
+15. Feed one active slice or task group to the implementation agent.
+16. Reflect and update the plan when implementation reality changes assumptions.
 
 ## Foliation rule
 
@@ -50,11 +52,37 @@ Then create dependency layers. Groups in the same layer are dependency-parallel 
 
 After layering, use unknown severity, time sensitivity, scarce people, fragile code areas, external dependencies, and decision-maker bottlenecks to decide actual sequencing and parallelization.
 
+## Visual Pack rule
+
+When enough information exists, produce a Visual Pack as part of the implementation plan.
+
+The Visual Pack should include:
+
+- Dump Board
+- Task Group Grid
+- Risk State Board
+- Interrelationship Diagram
+- Foliation / Layer Diagram
+- Parallelization Map
+- Appetite / Progress Snapshot
+- Slice Sequence Map
+
+Use `docs/visual-pack.md` for patterns.
+
+Rules:
+
+- tables remain the source of truth
+- visuals are projections for review and communication
+- use stable IDs in visuals
+- keep visuals GitHub Markdown-compatible
+- use Mermaid for diagrams and plain text boards for dump/risk/appetite views
+- do not invent precision when data is missing
+
 ## Skill map
 
 Use the repo skills as reusable instructions:
 
-- `implementation-planner/` — primary skill. Turn a PRD or shaped package into a kickoff doc, technical design plan, dependency foliation, parallelization plan, vertical slices, tracker, and agent handoff packets.
+- `implementation-planner/` — primary skill. Turn a PRD or shaped package into a kickoff doc, technical design plan, dependency foliation, parallelization plan, vertical slices, tracker, Visual Pack, and agent handoff packets.
 - `dumplink/` — helper skill. Turn shaped work into raw task dumps, vertical task groups, dependency layers, parallelization plan, risk state, and scope cuts.
 
 ## Authority order
@@ -83,6 +111,7 @@ Do not collapse:
 - vertical task groups into frontend/backend silos
 - unknowns into vague engineering tasks
 - dependency-parallel work into automatically parallel work
+- Visual Pack diagrams into source-of-truth tables
 - scope cuts into failures
 
 ## Context feeding
@@ -159,4 +188,5 @@ Before declaring work complete, check:
 - technical-design assumptions were updated if implementation contradicted them
 - task-group risk/dependency assumptions were updated if they changed
 - dependency foliation and parallelization decisions were updated if they changed
+- Visual Pack projections were updated if the underlying tables changed
 - implementation work, when present, maps back to slice/task-group and acceptance-check IDs

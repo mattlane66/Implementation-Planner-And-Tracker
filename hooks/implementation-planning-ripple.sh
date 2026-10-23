@@ -42,6 +42,7 @@ A planning artifact changed. Check whether related artifacts need updates:
 - build sequence
 - initial slices
 - tracker
+- Visual Pack projections
 - agent handoff packet
 
 MSG
@@ -58,6 +59,7 @@ Code or config changed. If implementation reality changed the plan, update the p
 - dependency foliation or parallelization
 - active slice acceptance checks
 - tracker and handoff packet
+- Visual Pack projections that reflect the changed plan
 
 MSG
     ;;

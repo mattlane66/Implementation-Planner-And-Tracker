@@ -1,16 +1,17 @@
 ---
 name: implementation-planner
-description: Turn a PRD or shaped package of work into a kickoff doc, technical design plan, initial vertical slices, tracker, and agent handoff packets.
+description: Turn a PRD or shaped package of work into a kickoff doc, technical design plan, initial vertical slices, visual pack, tracker, and agent handoff packets.
 planning: true
 implementation_planning: true
 technical_design: true
+visual_outputs: true
 ---
 
 # Implementation Planner and Tracker
 
 Use this skill when a PRD, pitch, or shaped package of work needs to become a technical design plan that humans and agents can build from.
 
-The skill sits between shaping and implementation. It preserves the intent of the product work while translating it into a builder-facing kickoff doc, a technical design outline, initial slices, and compact implementation handoff packets.
+The skill sits between shaping and implementation. It preserves the intent of the product work while translating it into a builder-facing kickoff doc, a technical design outline, initial slices, visual projections, and compact implementation handoff packets.
 
 It is not a generic ticket generator. It is a tool for working on what the work is before doing the work.
 
@@ -25,6 +26,7 @@ Produce a plan that answers:
 - Which groups can happen in parallel, and which only appear parallel until unknowns are considered?
 - What does done mean relative to the next thing this slice must enable?
 - What can be cut or deferred if the appetite runs out?
+- What visuals help humans and agents see the dump, task groups, risks, dependencies, layers, sequence, and appetite pressure?
 - What exact packet should a human or coding agent receive for the first slice?
 
 ## Inputs
@@ -73,15 +75,14 @@ Create these sections:
 13. Scope cuts and deferrals
 14. Acceptance checks
 15. Tracker
-16. Agent handoff packet
+16. Visual Pack
+17. Agent handoff packet
 
 ## Method
 
 ### 1. Readiness check
 
 Before planning implementation, determine whether the input is shaped enough.
-
-Use this table:
 
 | Dimension | Status | Evidence | Concern | Needed before build? |
 |---|---|---|---|---|
@@ -124,34 +125,6 @@ It should answer the anxieties at handoff:
 - What can safely happen in parallel?
 - What happens if part of it is harder than expected?
 - How will progress be visible without micromanagement?
-
-Kickoff doc format:
-
-```md
-# Kickoff Doc
-
-## Shape in one paragraph
-
-## Appetite
-
-## What we are building
-
-## What we are not building
-
-## Key user/system behaviors
-
-## Technical surfaces likely touched
-
-## Known risks and unknowns
-
-## First thing to learn or prove
-
-## What can happen in parallel
-
-## What to show after the first slice
-
-## Cut lines if time gets tight
-```
 
 ### 4. Create the technical design plan
 
@@ -225,7 +198,7 @@ Draw arrows where one task group provides input to another or reduces uncertaint
 |---|---|---|---|---|
 | D-01 | TG-01 | TG-02 | input / unlocks / derisks / blocks |  |
 
-Optional Mermaid:
+Include Mermaid when it clarifies the map:
 
 ```mermaid
 flowchart LR
@@ -249,8 +222,6 @@ Process:
 3. Convert the graph into layers of groups that can start once earlier prerequisite layers are satisfied.
 4. Mark groups in the same layer as dependency-parallel candidates.
 5. Do not yet assume same-layer groups should actually run in parallel; unknowns and capacity still decide that.
-
-Foliation table:
 
 | Layer | Task groups | Dependency reason | Can start when... | Dependency-parallel candidates |
 |---|---|---|---|---|
@@ -276,8 +247,6 @@ Decision rules:
 - If one group is well understood and another has a major unknown, do not let the well-understood work consume the attention needed to resolve the unknown.
 - If a group is dependency-ready but its output is not needed soon, it can wait.
 - If two groups look parallel but share a scarce person, fragile code area, or decision-maker, treat them as capacity-conflicted.
-
-Parallelization table:
 
 | Candidate set | Groups | Dependency status | Unknown profile | Capacity conflict? | Decision | Rationale |
 |---|---|---|---|---|---|---|
@@ -344,7 +313,33 @@ Track at the level of slices and task groups, not individual chores.
 |---|---|---|---|---|---|---|---|
 | SLICE-01 | slice | not-started / figuring-it-out / executing-down / done / cut | L1 |  |  |  |  |
 
-### 16. Prepare agent handoff packet
+### 16. Create the Visual Pack
+
+The Visual Pack is required when enough information exists. It turns the tables into reviewable visual projections. Tables remain the source of truth; visuals help humans and agents see the plan.
+
+Include these outputs:
+
+1. **Dump Board** — raw tasks before structure or order.
+2. **Task Group Grid** — tasks clustered into named or unnamed buckets.
+3. **Risk State Board** — task groups by uncertainty / certainty / done / cut state.
+4. **Interrelationship Diagram** — arrows showing unlocks, feeds, derisks, or blocks.
+5. **Foliation / Layer Diagram** — dependency layers over time.
+6. **Parallelization Map** — same-layer groups with the actual judgment decision.
+7. **Appetite / Progress Snapshot** — time budget, elapsed/remaining time, group states, and scope-pressure signal.
+8. **Slice Sequence Map** — initial slices in order with stop conditions.
+
+Use `docs/visual-pack.md` for reusable patterns. Prefer GitHub-compatible Mermaid and plain text boards.
+
+Visual rules:
+
+- Use stable IDs in every visual.
+- Do not invent precision. Use placeholders when data is missing.
+- Show dependency-parallel separately from judgment-parallel.
+- Show unknowns visually when possible.
+- Show appetite pressure when a time budget exists.
+- Keep visuals plain enough to render in GitHub Markdown.
+
+### 17. Prepare agent handoff packet
 
 End with a compact implementation packet for only the first selected slice.
 
@@ -380,6 +375,7 @@ A good output:
 - distinguishes dependency-parallel from judgment-parallel
 - sequences by unknowns, dependency, capacity, and right-to-left stop conditions
 - defines initial slices that can be judged end to end
+- produces a Visual Pack with dump board, task group grid, risk board, diagrams, appetite snapshot, and sequence map
 - gives agents one bounded slice at a time
 - includes cut lines before scope pressure arrives
 
@@ -390,6 +386,7 @@ A good output:
 - Starting with easy UI work while core unknowns remain hidden
 - Treating same-layer work as automatically parallelizable
 - Ignoring capacity conflicts between “independent” groups
+- Skipping the Visual Pack even when enough information exists
 - Overdesigning infrastructure because it will be needed “later later”
 - Missing the stop condition for the next slice
 - Creating too many slices too early
